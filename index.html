@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -411,8 +412,6 @@ body{
 
 </div>
 
-<!-- Supabase -->
-
 <script type="module">
 
 import {
@@ -503,8 +502,6 @@ window.signUp = async function(){
 
     }
 
-    /* users保存 */
-
     const user =
     data.user;
 
@@ -513,10 +510,7 @@ window.signUp = async function(){
     .from('users')
     .insert([{
 
-        id: user.id,
-
-        password:
-        password
+        id: user.id
 
     }]);
 
@@ -585,12 +579,44 @@ window.login = async function(){
 
     showMessage("入室しました");
 
-    console.log(data);
+    /* =========================
+       users確認
+    ========================= */
+
+    const {
+        data: profile,
+        error: profileError
+    } =
+    await supabase
+    .from('users')
+    .select('*')
+    .eq('id', data.user.id)
+    .single();
+
+    console.log(profile);
+    console.log(profileError);
 
     setTimeout(()=>{
 
-        location.href =
-        "setup.html";
+        if(
+
+            !profile.name ||
+
+            !profile.interests ||
+
+            profile.interests.length === 0
+
+        ){
+
+            location.href =
+            "setup.html";
+
+        }else{
+
+            location.href =
+            "chat.html";
+
+        }
 
     },1000);
 
@@ -600,3 +626,4 @@ window.login = async function(){
 
 </body>
 </html>
+```
