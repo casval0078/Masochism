@@ -503,6 +503,35 @@ window.signUp = async function(){
 
     }
 
+    /* users保存 */
+
+    const user =
+    data.user;
+
+    const { error: insertError } =
+    await supabase
+    .from('users')
+    .insert([{
+
+        id: user.id,
+
+        password:
+        password
+
+    }]);
+
+    if(insertError){
+
+        console.error(insertError);
+
+        alert(
+          "users保存失敗"
+        );
+
+        return;
+        
+    }
+    
     alert("登録成功");
 
     closeRegister();
