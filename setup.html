@@ -372,136 +372,62 @@ body{
 
     </div>
 
-    <!-- 支配 -->
+    <!-- タグ -->
 
     <div class="category">
 
         <div class="category-title">
-            支配・管理
-        </div>
-
-        <div class="tags">
-
-            <div class="tag">命令</div>
-            <div class="tag">管理</div>
-            <div class="tag">征服</div>
-            <div class="tag">調教</div>
-            <div class="tag">躾</div>
-            <div class="tag">屈服</div>
-            <div class="tag">心を掌握</div>
-            <div class="tag">思考誘導</div>
-            <div class="tag">暗示</div>
-            <div class="tag">洗脳</div>
-            <div class="tag">催眠</div>
-
-        </div>
-
-    </div>
-
-    <!-- 甘やかし -->
-
-    <div class="category">
-
-        <div class="category-title">
-            甘やかし・依存
-        </div>
-
-        <div class="tags">
-
-            <div class="tag">甘やかし</div>
-            <div class="tag">溺愛</div>
-            <div class="tag">包容</div>
-            <div class="tag">なでなで</div>
-            <div class="tag">すきすき</div>
-            <div class="tag">独占</div>
-            <div class="tag">染められる</div>
-
-        </div>
-
-    </div>
-
-    <!-- 焦らし -->
-
-    <div class="category">
-
-        <div class="category-title">
-            焦らし・翻弄
-        </div>
-
-        <div class="tags">
-
-            <div class="tag">焦らし</div>
-            <div class="tag">誘惑</div>
-            <div class="tag">小悪魔</div>
-            <div class="tag">意地悪</div>
-            <div class="tag">弄ばれる</div>
-            <div class="tag">煽り</div>
-            <div class="tag">我慢</div>
-            <div class="tag">お仕置き</div>
-            <div class="tag">抵抗と敗北</div>
-
-        </div>
-
-    </div>
-
-    <!-- 感覚 -->
-
-    <div class="category">
-
-        <div class="category-title">
-            感覚・没入
+            好み
         </div>
 
         <div class="tags">
 
             <div class="tag">囁き</div>
-            <div class="tag">吐息</div>
-            <div class="tag">心音</div>
-            <div class="tag">体温</div>
-            <div class="tag">視線</div>
-            <div class="tag">どきどき</div>
-            <div class="tag">多幸感漬け</div>
-            <div class="tag">背徳感</div>
-
-        </div>
-
-    </div>
-
-    <!-- 執着 -->
-
-    <div class="category">
-
-        <div class="category-title">
-            恋愛・執着
-        </div>
-
-        <div class="tags">
-
-            <div class="tag">ヤンデレ</div>
-            <div class="tag">逃げられない</div>
-            <div class="tag">篭絡</div>
+            <div class="tag">染められる</div>
+            <div class="tag">小悪魔</div>
+            <div class="tag">甘やかし</div>
+            <div class="tag">洗脳</div>
+            <div class="tag">溺愛</div>
+            <div class="tag">誘惑</div>
+            <div class="tag">抵抗と敗北</div>
+            <div class="tag">催眠</div>
+            <div class="tag">すきすき</div>
+            <div class="tag">独占</div>
+            <div class="tag">弄ばれる</div>
+            <div class="tag">お仕置き</div>
             <div class="tag">魅了</div>
-            <div class="tag">魔性</div>
-            <div class="tag">心情代弁</div>
-
-        </div>
-
-    </div>
-
-    <!-- 行動 -->
-
-    <div class="category">
-
-        <div class="category-title">
-            行動誘導
-        </div>
-
-        <div class="tags">
-
-            <div class="tag">カウント</div>
-            <div class="tag">おねだり</div>
+            <div class="tag">焦らし</div>
+            <div class="tag">視線</div>
+            <div class="tag">心を掌握</div>
+            <div class="tag">我慢</div>
+            <div class="tag">多幸感漬け</div>
+            <div class="tag">屈服</div>
+            <div class="tag">煽り</div>
+            <div class="tag">暗示</div>
+            <div class="tag">管理</div>
+            <div class="tag">思考誘導</div>
+            <div class="tag">どきどき</div>
+            <div class="tag">調教</div>
             <div class="tag">色仕掛け</div>
+            <div class="tag">包容</div>
+            <div class="tag">篭絡</div>
+            <div class="tag">カウント</div>
+            <div class="tag">背徳感</div>
+            <div class="tag">命令</div>
+            <div class="tag">心情代弁</div>
             <div class="tag">キス</div>
+            <div class="tag">逃げられない</div>
+            <div class="tag">征服</div>
+            <div class="tag">吐息</div>
+            <div class="tag">なでなで</div>
+            <div class="tag">心音</div>
+            <div class="tag">意地悪</div>
+            <div class="tag">堕落</div>
+            <div class="tag">躾</div>
+            <div class="tag">体温</div>
+            <div class="tag">魔性</div>
+            <div class="tag">おねだり</div>
+            <div class="tag">ヤンデレ</div>
 
         </div>
 
@@ -531,10 +457,6 @@ import {
 }
 from 'https://esm.sh/@supabase/supabase-js@2'
 
-/* =========================
-   Supabase
-========================= */
-
 const SUPABASE_URL =
 "https://mkjpfiyfhjmthrrmwgyg.supabase.co";
 
@@ -547,9 +469,7 @@ createClient(
     SUPABASE_ANON_KEY
 );
 
-/* =========================
-   タグ選択
-========================= */
+/* タグ */
 
 const tags =
 document.querySelectorAll('.tag');
@@ -580,8 +500,6 @@ tags.forEach(tag=>{
             tag.classList
             .toggle('active');
 
-            /* ♡ */
-
             const heart =
             document.createElement(
                 'div'
@@ -610,9 +528,7 @@ tags.forEach(tag=>{
 
 });
 
-/* =========================
-   検索
-========================= */
+/* 検索 */
 
 document
 .getElementById('search')
@@ -644,9 +560,7 @@ function(){
 
 });
 
-/* =========================
-   保存
-========================= */
+/* 保存 */
 
 window.saveProfile =
 async function(){
@@ -680,14 +594,10 @@ async function(){
     .auth
     .getUser();
 
-    if(!user){
-
-        alert(
-            'ログインしてください'
-        );
-
-        return;
-    }
+    console.log(
+        "auth uid",
+        user.id
+    );
 
     const {
         data,
@@ -695,7 +605,9 @@ async function(){
     } =
     await supabase
     .from('users')
-    .update({
+    .upsert({
+
+        id: user.id,
 
         name: name,
 
@@ -704,11 +616,9 @@ async function(){
 
         affection: 0
 
+    },{
+        onConflict:'id'
     })
-    .eq(
-        'id',
-        user.id
-    )
     .select();
 
     console.log(data);
@@ -732,14 +642,14 @@ async function(){
     )
     .innerText =
     '保存しました';
-/*
+
     setTimeout(()=>{
 
         location.href =
         'chat.html';
 
     },1000);
-*/
+
 }
 
 </script>
