@@ -1,0 +1,458 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SETUP</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    radial-gradient(circle at top,
+    #34124a 0%,
+    #0d0d16 40%,
+    #050507 100%);
+
+    font-family:sans-serif;
+
+    color:white;
+
+    padding:30px;
+}
+
+/* タイトル */
+
+.title{
+
+    text-align:center;
+
+    margin-bottom:30px;
+}
+
+.title h1{
+
+    font-size:34px;
+
+    margin-bottom:10px;
+
+    letter-spacing:2px;
+}
+
+.title p{
+
+    color:#cfcfe8;
+
+    font-size:14px;
+}
+
+/* カード */
+
+.card{
+
+    max-width:500px;
+
+    margin:auto;
+
+    padding:30px;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,0.05);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 0 30px rgba(139,92,246,0.25);
+}
+
+/* 入力欄 */
+
+.input-group{
+
+    margin-bottom:24px;
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#d8b4fe;
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:15px;
+}
+
+/* タグ */
+
+.tags{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+}
+
+.tag{
+
+    padding:10px 16px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+    user-select:none;
+}
+
+.tag.active{
+
+    background:
+    linear-gradient(
+        135deg,
+        #8b5cf6,
+        #ec4899
+    );
+
+    border:none;
+
+    box-shadow:
+    0 0 15px rgba(236,72,153,0.4);
+}
+
+/* ボタン */
+
+.save-btn{
+
+    width:100%;
+
+    margin-top:30px;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #8b5cf6,
+        #ec4899
+    );
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.save-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 0 25px rgba(236,72,153,0.5);
+}
+
+/* メッセージ */
+
+.message{
+
+    text-align:center;
+
+    margin-top:20px;
+
+    color:#f9a8d4;
+
+    min-height:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">
+
+    <h1>PROFILE SETUP</h1>
+
+    <p>
+        君のこと、
+        もっと教えて。
+    </p>
+
+</div>
+
+<div class="card">
+
+    <!-- 名前 -->
+
+    <div class="input-group">
+
+        <label>
+            呼ばれたい名前
+        </label>
+
+        <input
+            id="name"
+            type="text"
+            placeholder="名前">
+
+    </div>
+
+    <!-- タグ -->
+
+    <div class="input-group">
+
+        <label>
+            興味があるもの
+        </label>
+
+        <div class="tags">
+
+            <div class="tag">
+                命令
+            </div>
+
+            <div class="tag">
+                独占
+            </div>
+
+            <div class="tag">
+                甘やかし
+            </div>
+
+            <div class="tag">
+                焦らし
+            </div>
+
+            <div class="tag">
+                嫉妬
+            </div>
+
+            <div class="tag">
+                依存
+            </div>
+
+            <div class="tag">
+                心音
+            </div>
+
+            <div class="tag">
+                ヤンデレ
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 保存 -->
+
+    <button
+        class="save-btn"
+        onclick="saveProfile()">
+
+        保存する
+
+    </button>
+
+    <div
+        class="message"
+        id="message">
+    </div>
+
+</div>
+
+<script type="module">
+
+import {
+    createClient
+}
+from 'https://esm.sh/@supabase/supabase-js@2'
+
+/* =========================
+   Supabase
+========================= */
+
+const SUPABASE_URL =
+"https://mkjpfiyfhjmthrrmwgyg.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ranBmaXlmaGptdGhycm13Z3lnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzA2MjIsImV4cCI6MjA5NDY0NjYyMn0.1EZR4uc0q4l1oMCgqgPqg7g6k5SCFI4zdKudD0wIsyU";
+
+const supabase =
+createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* =========================
+   タグ選択
+========================= */
+
+const tags =
+document.querySelectorAll('.tag');
+
+tags.forEach(tag=>{
+
+    tag.addEventListener(
+        'click',
+        ()=>{
+
+            tag.classList
+            .toggle('active');
+
+        }
+    );
+
+});
+
+/* =========================
+   メッセージ
+========================= */
+
+function showMessage(text){
+
+    document.getElementById(
+        'message'
+    ).innerText = text;
+
+}
+
+/* =========================
+   保存
+========================= */
+
+window.saveProfile =
+async function(){
+
+    /* ユーザー取得 */
+
+    const {
+        data: { user }
+    } =
+    await supabase.auth.getUser();
+
+    if(!user){
+
+        showMessage(
+            "ログインしてください"
+        );
+
+        return;
+    }
+
+    /* 名前 */
+
+    const name =
+    document.getElementById(
+        'name'
+    ).value;
+
+    /* タグ */
+
+    const selectedTags =
+    [];
+
+    document
+    .querySelectorAll(
+        '.tag.active'
+    )
+    .forEach(tag=>{
+
+        selectedTags.push(
+            tag.innerText
+        );
+
+    });
+
+    /* 保存 */
+
+    const { error } =
+    await supabase
+    .from('users')
+    .update({
+
+        name: name,
+
+        interests:
+        selectedTags,
+
+        affection: 0
+
+    })
+    .eq('id', user.id);
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            "保存失敗"
+        );
+
+        return;
+    }
+
+    showMessage(
+        "保存しました"
+    );
+
+    setTimeout(()=>{
+
+        location.href =
+        "chat.html";
+
+    },1000);
+
+}
+
+</script>
+
+</body>
+</html>
+```
