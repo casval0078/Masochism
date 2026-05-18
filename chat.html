@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>CHAT</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    font-family:sans-serif;
+
+    background:
+    radial-gradient(circle at top,
+    #34124a 0%,
+    #0d0d16 40%,
+    #050507 100%);
+
+    color:white;
+
+    overflow:hidden;
+}
+
+/* header */
+
+.header{
+
+    height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 20px;
+
+    border-bottom:
+    1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+}
+
+.ai-name{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#f5d0fe;
+}
+
+.status{
+
+    font-size:12px;
+
+    color:#8affb0;
+}
+
+/* settings */
+
+.settings-btn{
+
+    width:44px;
+    height:44px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    font-size:20px;
+
+    transition:0.2s;
+}
+
+.settings-btn:hover{
+
+    transform:rotate(90deg);
+
+    background:
+    rgba(236,72,153,0.25);
+}
+
+/* chat */
+
+.chat-container{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:14px;
+}
+
+.message{
+
+    max-width:75%;
+
+    padding:14px 18px;
+
+    border-radius:22px;
+
+    line-height:1.6;
+
+    word-break:break-word;
+
+    animation:fadeIn 0.25s ease;
+}
+
+.user{
+
+    align-self:flex-end;
+
+    background:
+    linear-gradient(
+        135deg,
+        #8b5cf6,
+        #ec4899
+    );
+}
+
+.ai{
+
+    align-self:flex-start;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.06);
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+        transform:translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0px);
+
+    }
+
+}
+
+/* typing */
+
+.typing{
+
+    font-size:13px;
+
+    color:#d8b4fe;
+
+    margin-left:8px;
+
+    margin-bottom:8px;
+}
+
+/* input */
+
+.input-area{
+
+    padding:16px;
+
+    display:flex;
+
+    gap:12px;
+
+    border-top:
+    1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+}
+
+.input-area input{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:white;
+}
+
+.send-btn{
+
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #8b5cf6,
+        #ec4899
+    );
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:bold;
+}
+
+/* upload */
+
+.upload-btn{
+
+    padding:14px 16px;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    cursor:pointer;
+}
+
+/* affection */
+
+.affection{
+
+    font-size:12px;
+
+    color:#f9a8d4;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <div>
+
+        <div class="ai-name">
+            LILITH
+        </div>
+
+        <div class="status">
+            online
+        </div>
+
+    </div>
+
+    <div
+        class="settings-btn"
+        onclick="location.href='setup.html'">
+
+        ⚙
+
+    </div>
+
+</div>
+
+<div
+    class="chat-container"
+    id="chatContainer">
+
+</div>
+
+<div
+    class="typing"
+    id="typing">
+
+</div>
+
+<div class="input-area">
+
+    <label
+        class="upload-btn">
+
+        📷
+
+        <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+            hidden>
+
+    </label>
+
+    <input
+        type="text"
+        id="messageInput"
+        placeholder="メッセージ">
+
+    <button
+        class="send-btn"
+        onclick="sendMessage()">
+
+        送信
+
+    </button>
+
+</div>
+
+<script type="module">
+
+import {
+    createClient
+}
+from 'https://esm.sh/@supabase/supabase-js@2'
+
+const SUPABASE_URL =
+"https://mkjpfiyfhjmthrrmwgyg.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ranBmaXlmaGptdGhycm13Z3lnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzA2MjIsImV4cCI6MjA5NDY0NjYyMn0.1EZR4uc0q4l1oMCgqgPqg7g6k5SCFI4zdKudD0wIsyU";
+
+const supabase =
+createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+let currentUser;
+let profile;
+let affection = 0;
+
+/* =========================
+   初期化
+========================= */
+
+async function init(){
+
+    const {
+        data: { user }
+    } =
+    await supabase.auth.getUser();
+
+    if(!user){
+
+        location.href =
+        "index.html";
+
+        return;
+    }
+
+    currentUser = user;
+
+    const {
+        data
+    } =
+    await supabase
+    .from('users')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+    profile = data;
+
+    affection =
+    data.affection || 0;
+
+    loadMessages();
+
+    firstAIMessage();
+
+}
+
+init();
+
+/* =========================
+   表示
+========================= */
+
+function addMessage(text,type){
+
+    const div =
+    document.createElement(
+        'div'
+    );
+
+    div.className =
+    `message ${type}`;
+
+    div.innerText =
+    text;
+
+    document
+    .getElementById(
+        'chatContainer'
+    )
+    .appendChild(div);
+
+    scrollBottom();
+
+}
+
+function scrollBottom(){
+
+    const container =
+    document.getElementById(
+        'chatContainer'
+    );
+
+    container.scrollTop =
+    container.scrollHeight;
+
+}
+
+/* =========================
+   履歴
+========================= */
+
+async function loadMessages(){
+
+    const {
+        data
+    } =
+    await supabase
+    .from('messages')
+    .select('*')
+    .eq(
+        'user_id',
+        currentUser.id
+    )
+    .order(
+        'created_at',
+        { ascending:true }
+    );
+
+    if(data.length === 0){
+
+        return;
+    }
+
+    data.forEach(msg=>{
+
+        addMessage(
+            msg.message,
+            msg.role
+        );
+
+    });
+
+}
+
+/* =========================
+   初回AI
+========================= */
+
+function firstAIMessage(){
+
+    const container =
+    document.getElementById(
+        'chatContainer'
+    );
+
+    if(
+        container.children.length > 0
+    ){
+
+        return;
+    }
+
+    let intro =
+`また来てくれたんだ。
+今日はどんな気分？`;
+
+    if(
+        profile.interests
+        .includes("甘やかし")
+    ){
+
+        intro =
+`おかえり。
+ちゃんと来てくれてえらいね。`;
+
+    }
+
+    if(
+        profile.interests
+        .includes("命令")
+    ){
+
+        intro =
+`おかえり。
+今日はちゃんと言うこと聞ける？`;
+
+    }
+
+    if(
+        profile.interests
+        .includes("ヤンデレ")
+    ){
+
+        intro =
+`待ってた。
+今日はちゃんと私だけ見てね。`;
+
+    }
+
+    addMessage(
+        intro,
+        "ai"
+    );
+
+}
+
+/* =========================
+   送信
+========================= */
+
+window.sendMessage =
+async function(){
+
+    const input =
+    document.getElementById(
+        'messageInput'
+    );
+
+    const text =
+    input.value.trim();
+
+    if(!text){
+
+        return;
+    }
+
+    addMessage(
+        text,
+        "user"
+    );
+
+    input.value = "";
+
+    await supabase
+    .from('messages')
+    .insert([{
+
+        user_id:
+        currentUser.id,
+
+        role:"user",
+
+        message:text
+
+    }]);
+
+    affection += 1;
+
+    await supabase
+    .from('users')
+    .update({
+
+        affection: affection
+
+    })
+    .eq(
+        'id',
+        currentUser.id
+    );
+
+    aiReply(text);
+
+}
+
+/* =========================
+   AI返信
+========================= */
+
+async function aiReply(userText){
+
+    document
+    .getElementById(
+        'typing'
+    )
+    .innerText =
+    "入力中...";
+
+    setTimeout(async ()=>{
+
+        let reply =
+        "もっと君のこと知りたいな。";
+
+        if(
+            profile.interests
+            .includes("甘やかし")
+        ){
+
+            reply =
+            "ちゃんと来てくれるの嬉しい。";
+
+        }
+
+        if(
+            profile.interests
+            .includes("命令")
+        ){
+
+            reply =
+            "ふふ、素直だね。";
+
+        }
+
+        if(
+            profile.interests
+            .includes("独占")
+        ){
+
+            reply =
+            "今は私だけ見て。";
+
+        }
+
+        if(
+            affection > 10
+        ){
+
+            reply +=
+            "\n今日どんな感じか見てみたいな。";
+
+        }
+
+        addMessage(
+            reply,
+            "ai"
+        );
+
+        await supabase
+        .from('messages')
+        .insert([{
+
+            user_id:
+            currentUser.id,
+
+            role:"ai",
+
+            message:reply
+
+        }]);
+
+        document
+        .getElementById(
+            'typing'
+        )
+        .innerText =
+        "";
+
+    },1200);
+
+}
+
+/* =========================
+   画像送信
+========================= */
+
+document
+.getElementById(
+    'photoInput'
+)
+.addEventListener(
+'change',
+async function(){
+
+    const file =
+    this.files[0];
+
+    if(!file){
+
+        return;
+    }
+
+    const fileName =
+`${currentUser.id}/${Date.now()}_${file.name}`;
+
+    const {
+        error
+    } =
+    await supabase
+    .storage
+    .from('selfies')
+    .upload(
+        fileName,
+        file
+    );
+
+    if(error){
+
+        alert(
+            "アップロード失敗"
+        );
+
+        return;
+    }
+
+    addMessage(
+        "📷 写真を送信しました",
+        "user"
+    );
+
+    affection += 5;
+
+    await supabase
+    .from('users')
+    .update({
+
+        affection: affection
+
+    })
+    .eq(
+        'id',
+        currentUser.id
+    );
+
+    setTimeout(()=>{
+
+        addMessage(
+            "見せてくれてありがとう。",
+            "ai"
+        );
+
+    },1000);
+
+});
+
+</script>
+
+</body>
+</html>
