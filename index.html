@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -37,24 +38,17 @@ body{
     position:absolute;
     width:420px;
     height:420px;
-
     border-radius:50%;
-
     background:#8b5cf6;
-
     filter:blur(140px);
-
     opacity:0.25;
-
     animation:float 6s ease-in-out infinite;
 }
 
 .glow2{
     left:60%;
     top:55%;
-
     background:#ec4899;
-
     animation-delay:2s;
 }
 
@@ -74,7 +68,7 @@ body{
 
 }
 
-/* ログインカード */
+/* カード */
 
 .login-box{
 
@@ -147,7 +141,7 @@ body{
 
 /* ボタン */
 
-.login-btn{
+.main-btn{
 
     width:100%;
 
@@ -172,9 +166,11 @@ body{
     cursor:pointer;
 
     transition:0.25s;
+
+    margin-top:6px;
 }
 
-.login-btn:hover{
+.main-btn:hover{
 
     transform:translateY(-2px);
 
@@ -183,11 +179,11 @@ body{
 
 }
 
-/* 下 */
+/* 新規登録 */
 
-.bottom-text{
+.register-link{
 
-    margin-top:18px;
+    margin-top:22px;
 
     text-align:center;
 
@@ -196,7 +192,7 @@ body{
     color:#bcbcd4;
 }
 
-.bottom-text span{
+.register-link span{
 
     color:#d8b4fe;
 
@@ -222,7 +218,7 @@ body{
 
 .secret{
 
-    margin-top:22px;
+    margin-top:24px;
 
     text-align:center;
 
@@ -233,6 +229,63 @@ body{
     letter-spacing:2px;
 }
 
+/* モーダル */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.65);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:10;
+}
+
+.modal-content{
+
+    width:320px;
+
+    padding:30px;
+
+    border-radius:24px;
+
+    background:#12121d;
+
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.modal-title{
+
+    text-align:center;
+
+    margin-bottom:20px;
+}
+
+.close-btn{
+
+    margin-top:14px;
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2a2a38;
+
+    color:white;
+
+    cursor:pointer;
+}
+
 </style>
 </head>
 
@@ -241,11 +294,13 @@ body{
 <div class="glow"></div>
 <div class="glow glow2"></div>
 
+<!-- ログイン -->
+
 <div class="login-box">
 
     <div class="title">
         <h1>LOGIN</h1>
-        <p>ようこそ。</p>
+        <p>今夜も来てくれたんだ。</p>
     </div>
 
     <div class="input-group">
@@ -263,18 +318,18 @@ body{
     </div>
 
     <button
-        class="login-btn"
-        onclick="signUp()">
+        class="main-btn"
+        onclick="login()">
 
-        登録する
+        入室する
 
     </button>
 
-    <div class="bottom-text">
+    <div class="register-link">
 
-        すでに登録済み？
-        <span onclick="login()">
-            ログイン
+        初めて？
+        <span onclick="openRegister()">
+            新規登録
         </span>
 
     </div>
@@ -287,6 +342,50 @@ body{
 
 </div>
 
+<!-- 新規登録モーダル -->
+
+<div class="modal" id="registerModal">
+
+    <div class="modal-content">
+
+        <div class="modal-title">
+            <h2>新規登録</h2>
+        </div>
+
+        <div class="input-group">
+            <input
+                id="registerEmail"
+                type="email"
+                placeholder="メールアドレス">
+        </div>
+
+        <div class="input-group">
+            <input
+                id="registerPassword"
+                type="password"
+                placeholder="パスワード">
+        </div>
+
+        <button
+            class="main-btn"
+            onclick="signUp()">
+
+            登録する
+
+        </button>
+
+        <button
+            class="close-btn"
+            onclick="closeRegister()">
+
+            閉じる
+
+        </button>
+
+    </div>
+
+</div>
+
 <!-- Supabase -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -294,7 +393,7 @@ body{
 <script>
 
 /* =========================
-   Supabase設定
+   Supabase
 ========================= */
 
 const SUPABASE_URL =
@@ -310,7 +409,7 @@ window.supabase.createClient(
 );
 
 /* =========================
-   メッセージ表示
+   メッセージ
 ========================= */
 
 function showMessage(text){
@@ -321,23 +420,34 @@ function showMessage(text){
 }
 
 /* =========================
+   モーダル
+========================= */
+
+function openRegister(){
+
+    document.getElementById("registerModal")
+    .style.display = "flex";
+
+}
+
+function closeRegister(){
+
+    document.getElementById("registerModal")
+    .style.display = "none";
+
+}
+
+/* =========================
    新規登録
 ========================= */
 
 async function signUp(){
 
     const email =
-    document.getElementById("email").value;
+    document.getElementById("registerEmail").value;
 
     const password =
-    document.getElementById("password").value;
-
-    if(!email || !password){
-
-        showMessage("入力してください");
-        return;
-
-    }
+    document.getElementById("registerPassword").value;
 
     const { data, error } =
     await supabase.auth.signUp({
@@ -349,14 +459,14 @@ async function signUp(){
 
     if(error){
 
-        showMessage(error.message);
+        alert(error.message);
         return;
 
     }
 
-    showMessage("登録成功");
+    alert("登録成功");
 
-    console.log(data);
+    closeRegister();
 
 }
 
@@ -382,14 +492,12 @@ async function login(){
 
     if(error){
 
-        showMessage(error.message);
+        showMessage("メールまたはパスワードが違います");
         return;
 
     }
 
-    showMessage("ログイン成功");
-
-    console.log(data);
+    showMessage("入室しました");
 
     setTimeout(()=>{
 
@@ -403,3 +511,4 @@ async function login(){
 
 </body>
 </html>
+```
