@@ -16,13 +16,17 @@
 }
 
 body{
+
     height:100vh;
+
     display:flex;
     justify-content:center;
     align-items:center;
+
     overflow:hidden;
 
     font-family:sans-serif;
+
     color:white;
 
     background:
@@ -35,20 +39,30 @@ body{
 /* 背景の光 */
 
 .glow{
+
     position:absolute;
+
     width:420px;
     height:420px;
+
     border-radius:50%;
+
     background:#8b5cf6;
+
     filter:blur(140px);
+
     opacity:0.25;
+
     animation:float 6s ease-in-out infinite;
 }
 
 .glow2{
+
     left:60%;
     top:55%;
+
     background:#ec4899;
+
     animation-delay:2s;
 }
 
@@ -68,7 +82,7 @@ body{
 
 }
 
-/* カード */
+/* ログインカード */
 
 .login-box{
 
@@ -90,30 +104,37 @@ body{
     0 0 30px rgba(139,92,246,0.25);
 
     z-index:2;
-
 }
 
 /* タイトル */
 
 .title{
+
     text-align:center;
+
     margin-bottom:30px;
 }
 
 .title h1{
+
     font-size:34px;
+
     letter-spacing:3px;
+
     margin-bottom:8px;
 }
 
 .title p{
+
     color:#cfcfe8;
+
     font-size:14px;
 }
 
 /* 入力欄 */
 
 .input-group{
+
     margin-bottom:18px;
 }
 
@@ -136,6 +157,7 @@ body{
 }
 
 .input-group input::placeholder{
+
     color:#b8b8d0;
 }
 
@@ -176,10 +198,9 @@ body{
 
     box-shadow:
     0 0 25px rgba(236,72,153,0.5);
-
 }
 
-/* 新規登録 */
+/* 下テキスト */
 
 .register-link{
 
@@ -334,7 +355,10 @@ body{
 
     </div>
 
-    <div class="message" id="message"></div>
+    <div
+        class="message"
+        id="message">
+    </div>
 
     <div class="secret">
         only for you
@@ -344,7 +368,9 @@ body{
 
 <!-- 新規登録モーダル -->
 
-<div class="modal" id="registerModal">
+<div
+    class="modal"
+    id="registerModal">
 
     <div class="modal-content">
 
@@ -388,12 +414,15 @@ body{
 
 <!-- Supabase -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
 
-<script>
+import {
+    createClient
+}
+from 'https://esm.sh/@supabase/supabase-js@2'
 
 /* =========================
-   Supabase
+   Supabase設定
 ========================= */
 
 const SUPABASE_URL =
@@ -403,7 +432,7 @@ const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ranBmaXlmaGptdGhycm13Z3lnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzA2MjIsImV4cCI6MjA5NDY0NjYyMn0.1EZR4uc0q4l1oMCgqgPqg7g6k5SCFI4zdKudD0wIsyU";
 
 const supabase =
-window.supabase.createClient(
+createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
@@ -423,14 +452,14 @@ function showMessage(text){
    モーダル
 ========================= */
 
-function openRegister(){
+window.openRegister = function(){
 
     document.getElementById("registerModal")
     .style.display = "flex";
 
 }
 
-function closeRegister(){
+window.closeRegister = function(){
 
     document.getElementById("registerModal")
     .style.display = "none";
@@ -441,13 +470,24 @@ function closeRegister(){
    新規登録
 ========================= */
 
-async function signUp(){
+window.signUp = async function(){
 
     const email =
-    document.getElementById("registerEmail").value;
+    document.getElementById(
+        "registerEmail"
+    ).value;
 
     const password =
-    document.getElementById("registerPassword").value;
+    document.getElementById(
+        "registerPassword"
+    ).value;
+
+    if(!email || !password){
+
+        alert("入力してください");
+        return;
+
+    }
 
     const { data, error } =
     await supabase.auth.signUp({
@@ -474,16 +514,31 @@ async function signUp(){
    ログイン
 ========================= */
 
-async function login(){
+window.login = async function(){
 
     const email =
-    document.getElementById("email").value;
+    document.getElementById(
+        "email"
+    ).value;
 
     const password =
-    document.getElementById("password").value;
+    document.getElementById(
+        "password"
+    ).value;
+
+    if(!email || !password){
+
+        showMessage(
+            "入力してください"
+        );
+
+        return;
+
+    }
 
     const { data, error } =
-    await supabase.auth.signInWithPassword({
+    await supabase.auth
+    .signInWithPassword({
 
         email: email,
         password: password
@@ -492,16 +547,22 @@ async function login(){
 
     if(error){
 
-        showMessage("メールまたはパスワードが違います");
+        showMessage(
+            "メールまたはパスワードが違います"
+        );
+
         return;
 
     }
 
     showMessage("入室しました");
 
+    console.log(data);
+
     setTimeout(()=>{
 
-        location.href = "setup.html";
+        location.href =
+        "setup.html";
 
     },1000);
 
