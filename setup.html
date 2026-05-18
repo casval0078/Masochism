@@ -600,29 +600,34 @@ async function(){
     );
 
     const {
-        data,
-        error
-    } =
-    await supabase
-    .from('users')
-    .upsert({
+    data,
+    error
+} =
+await supabase
+.from('users')
+.update({
 
-        id: user.id,
+    name: name,
 
-        name: name,
+    interests:
+    selectedTags,
 
-        interests:
-        selectedTags,
+    affection: 0
 
-        affection: 0
+})
+.eq(
+    'id',
+    user.id
+)
+.select();
 
-    },{
-        onConflict:'id'
-    })
-    .select();
+console.log(
+    "auth uid",
+    user.id
+);
 
-    console.log(data);
-    console.log(error);
+console.log(data);
+console.log(error);
 
     if(error){
 
