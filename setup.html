@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -5,7 +6,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>SETUP</title>
+<title>PROFILE SETUP</title>
 
 <style>
 
@@ -19,17 +20,17 @@ body{
 
     min-height:100vh;
 
-    background:
-    radial-gradient(circle at top,
-    #34124a 0%,
-    #0d0d16 40%,
-    #050507 100%);
+    padding:30px;
 
     font-family:sans-serif;
 
     color:white;
 
-    padding:30px;
+    background:
+    radial-gradient(circle at top,
+    #34124a 0%,
+    #0d0d16 40%,
+    #050507 100%);
 }
 
 /* タイトル */
@@ -45,9 +46,9 @@ body{
 
     font-size:34px;
 
-    margin-bottom:10px;
-
     letter-spacing:2px;
+
+    margin-bottom:10px;
 }
 
 .title p{
@@ -61,7 +62,7 @@ body{
 
 .card{
 
-    max-width:500px;
+    max-width:700px;
 
     margin:auto;
 
@@ -79,20 +80,22 @@ body{
     0 0 30px rgba(139,92,246,0.25);
 }
 
-/* 入力欄 */
+/* 入力 */
 
 .input-group{
 
-    margin-bottom:24px;
+    margin-bottom:28px;
 }
 
 .input-group label{
 
     display:block;
 
-    margin-bottom:10px;
+    margin-bottom:12px;
 
     color:#d8b4fe;
+
+    font-size:14px;
 }
 
 .input-group input{
@@ -114,6 +117,53 @@ body{
     font-size:15px;
 }
 
+.input-group input::placeholder{
+
+    color:#aaa;
+}
+
+/* 検索 */
+
+.search-box{
+
+    margin-bottom:25px;
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+}
+
+/* カテゴリ */
+
+.category{
+
+    margin-bottom:30px;
+}
+
+.category-title{
+
+    margin-bottom:14px;
+
+    color:#f0abfc;
+
+    font-size:16px;
+
+    font-weight:bold;
+}
+
 /* タグ */
 
 .tags{
@@ -126,6 +176,8 @@ body{
 }
 
 .tag{
+
+    position:relative;
 
     padding:10px 16px;
 
@@ -140,6 +192,13 @@ body{
     transition:0.2s;
 
     user-select:none;
+
+    overflow:hidden;
+}
+
+.tag:hover{
+
+    transform:translateY(-2px);
 }
 
 .tag.active{
@@ -154,7 +213,58 @@ body{
     border:none;
 
     box-shadow:
-    0 0 15px rgba(236,72,153,0.4);
+    0 0 15px rgba(236,72,153,0.45);
+}
+
+/* ♡アニメ */
+
+.heart{
+
+    position:absolute;
+
+    right:8px;
+    top:2px;
+
+    font-size:12px;
+
+    opacity:0;
+
+    animation:heartPop 0.5s ease;
+}
+
+@keyframes heartPop{
+
+    0%{
+        transform:
+        translateY(8px)
+        scale(0.5);
+
+        opacity:0;
+    }
+
+    50%{
+        opacity:1;
+    }
+
+    100%{
+        transform:
+        translateY(-8px)
+        scale(1.2);
+
+        opacity:0;
+    }
+
+}
+
+/* 選択数 */
+
+.selected-count{
+
+    margin-bottom:20px;
+
+    color:#f9a8d4;
+
+    font-size:14px;
 }
 
 /* ボタン */
@@ -163,7 +273,7 @@ body{
 
     width:100%;
 
-    margin-top:30px;
+    margin-top:20px;
 
     padding:16px;
 
@@ -220,8 +330,7 @@ body{
     <h1>PROFILE SETUP</h1>
 
     <p>
-        君のこと、
-        もっと教えて。
+        君の好みを教えて。
     </p>
 
 </div>
@@ -243,199 +352,158 @@ body{
 
     </div>
 
-    <!-- タグ -->
+    <!-- 検索 -->
 
-    <div class="input-group">
+    <div class="search-box">
 
-        <label>
-            興味があるもの
-        </label>
+        <input
+            id="search"
+            type="text"
+            placeholder="タグ検索">
+
+    </div>
+
+    <!-- 選択数 -->
+
+    <div
+        class="selected-count"
+        id="selectedCount">
+
+        0個選択中
+
+    </div>
+
+    <!-- 支配 -->
+
+    <div class="category">
+
+        <div class="category-title">
+            支配・管理
+        </div>
 
         <div class="tags">
 
-            <div class="tag">
-                囁き
-            </div>
+            <div class="tag">命令</div>
+            <div class="tag">管理</div>
+            <div class="tag">征服</div>
+            <div class="tag">調教</div>
+            <div class="tag">躾</div>
+            <div class="tag">屈服</div>
+            <div class="tag">心を掌握</div>
+            <div class="tag">思考誘導</div>
+            <div class="tag">暗示</div>
+            <div class="tag">洗脳</div>
+            <div class="tag">催眠</div>
 
-            <div class="tag">
-                染められる
-            </div>
+        </div>
 
-            <div class="tag">
-                小悪魔
-            </div>
+    </div>
 
-            <div class="tag">
-                甘やかし
-            </div>
+    <!-- 甘やかし -->
 
-            <div class="tag">
-                洗脳
-            </div>
+    <div class="category">
 
-            <div class="tag">
-                溺愛
-            </div>
+        <div class="category-title">
+            甘やかし・依存
+        </div>
 
-            <div class="tag">
-                誘惑
-            </div>
+        <div class="tags">
 
-            <div class="tag">
-                抵抗と敗北
-            </div>
+            <div class="tag">甘やかし</div>
+            <div class="tag">溺愛</div>
+            <div class="tag">包容</div>
+            <div class="tag">なでなで</div>
+            <div class="tag">すきすき</div>
+            <div class="tag">独占</div>
+            <div class="tag">染められる</div>
 
-            <div class="tag">
-                催眠
-            </div>
+        </div>
 
-            <div class="tag">
-                すきすき
-            </div>
+    </div>
 
-            <div class="tag">
-                独占
-            </div>
+    <!-- 焦らし -->
 
-            <div class="tag">
-                弄ばれる
-            </div>
+    <div class="category">
 
-            <div class="tag">
-                お仕置き
-            </div>
+        <div class="category-title">
+            焦らし・翻弄
+        </div>
 
-            <div class="tag">
-                魅了
-            </div>
+        <div class="tags">
 
-            <div class="tag">
-                焦らし
-            </div>
+            <div class="tag">焦らし</div>
+            <div class="tag">誘惑</div>
+            <div class="tag">小悪魔</div>
+            <div class="tag">意地悪</div>
+            <div class="tag">弄ばれる</div>
+            <div class="tag">煽り</div>
+            <div class="tag">我慢</div>
+            <div class="tag">お仕置き</div>
+            <div class="tag">抵抗と敗北</div>
 
-            <div class="tag">
-                視線
-            </div>
+        </div>
 
-            <div class="tag">
-                心を掌握
-            </div>
+    </div>
 
-            <div class="tag">
-                我慢
-            </div>
+    <!-- 感覚 -->
 
-            <div class="tag">
-                多幸感漬け
-            </div>
+    <div class="category">
 
-            <div class="tag">
-                屈服
-            </div>
+        <div class="category-title">
+            感覚・没入
+        </div>
 
-            <div class="tag">
-                煽り
-            </div>
+        <div class="tags">
 
-            <div class="tag">
-                暗示
-            </div>
+            <div class="tag">囁き</div>
+            <div class="tag">吐息</div>
+            <div class="tag">心音</div>
+            <div class="tag">体温</div>
+            <div class="tag">視線</div>
+            <div class="tag">どきどき</div>
+            <div class="tag">多幸感漬け</div>
+            <div class="tag">背徳感</div>
 
-            <div class="tag">
-                管理
-            </div>
+        </div>
 
-            <div class="tag">
-                思考誘導
-            </div>
+    </div>
 
-            <div class="tag">
-                どきどき
-            </div>
+    <!-- 執着 -->
 
-            <div class="tag">
-                調教
-            </div>
+    <div class="category">
 
-            <div class="tag">
-                色仕掛け
-            </div>
+        <div class="category-title">
+            恋愛・執着
+        </div>
 
-            <div class="tag">
-                包容
-            </div>
+        <div class="tags">
 
-            <div class="tag">
-                篭絡
-            </div>
+            <div class="tag">ヤンデレ</div>
+            <div class="tag">逃げられない</div>
+            <div class="tag">篭絡</div>
+            <div class="tag">魅了</div>
+            <div class="tag">魔性</div>
+            <div class="tag">心情代弁</div>
 
-            <div class="tag">
-                カウント
-            </div>
+        </div>
 
-            <div class="tag">
-                背徳感
-            </div>
+    </div>
 
-            <div class="tag">
-                命令
-            </div>
+    <!-- 行動 -->
 
-            <div class="tag">
-                心情代弁
-            </div>
+    <div class="category">
 
-            <div class="tag">
-                キス
-            </div>
+        <div class="category-title">
+            行動誘導
+        </div>
 
-            <div class="tag">
-                逃げられない
-            </div>
+        <div class="tags">
 
-            <div class="tag">
-                征服
-            </div>
+            <div class="tag">カウント</div>
+            <div class="tag">おねだり</div>
+            <div class="tag">色仕掛け</div>
+            <div class="tag">キス</div>
 
-            <div class="tag">
-                吐息
-            </div>
-
-            <div class="tag">
-                なでなで
-            </div>
-
-            <div class="tag">
-                心音
-            </div>
-
-            <div class="tag">
-                意地悪
-            </div>
-
-            <div class="tag">
-                堕落
-            </div>
-
-            <div class="tag">
-                躾
-            </div>
-
-            <div class="tag">
-                体温
-            </div>
-
-            <div class="tag">
-                魔性
-            </div>
-
-            <div class="tag">
-                おねだり
-            </div>
-
-            <div class="tag">
-                ヤンデレ
-            </div>
         </div>
 
     </div>
@@ -487,6 +555,23 @@ createClient(
 const tags =
 document.querySelectorAll('.tag');
 
+const selectedCount =
+document.getElementById(
+'selectedCount'
+);
+
+function updateCount(){
+
+    const count =
+    document.querySelectorAll(
+        '.tag.active'
+    ).length;
+
+    selectedCount.innerText =
+    count + '個選択中';
+
+}
+
 tags.forEach(tag=>{
 
     tag.addEventListener(
@@ -496,22 +581,69 @@ tags.forEach(tag=>{
             tag.classList
             .toggle('active');
 
+            /* ♡ */
+
+            const heart =
+            document.createElement(
+                'div'
+            );
+
+            heart.className =
+            'heart';
+
+            heart.innerText =
+            '♡';
+
+            tag.appendChild(
+                heart
+            );
+
+            setTimeout(()=>{
+
+                heart.remove();
+
+            },500);
+
+            updateCount();
+
         }
     );
 
 });
 
 /* =========================
-   メッセージ
+   検索
 ========================= */
 
-function showMessage(text){
+document
+.getElementById('search')
+.addEventListener(
+'input',
+function(){
 
-    document.getElementById(
-        'message'
-    ).innerText = text;
+    const keyword =
+    this.value;
 
-}
+    tags.forEach(tag=>{
+
+        if(
+            tag.innerText
+            .includes(keyword)
+        ){
+
+            tag.style.display =
+            'inline-block';
+
+        }else{
+
+            tag.style.display =
+            'none';
+
+        }
+
+    });
+
+});
 
 /* =========================
    保存
@@ -520,30 +652,12 @@ function showMessage(text){
 window.saveProfile =
 async function(){
 
-    /* ユーザー取得 */
-
-    const {
-        data: { user }
-    } =
-    await supabase.auth.getUser();
-
-    if(!user){
-
-        showMessage(
-            "ログインしてください"
-        );
-
-        return;
-    }
-
-    /* 名前 */
-
     const name =
-    document.getElementById(
+    document
+    .getElementById(
         'name'
-    ).value;
-
-    /* タグ */
+    )
+    .value;
 
     const selectedTags =
     [];
@@ -560,9 +674,26 @@ async function(){
 
     });
 
-    /* 保存 */
+    const {
+        data: { user }
+    } =
+    await supabase
+    .auth
+    .getUser();
 
-    const { error } =
+    if(!user){
+
+        alert(
+            'ログインしてください'
+        );
+
+        return;
+    }
+
+    const {
+        data,
+        error
+    } =
     await supabase
     .from('users')
     .update({
@@ -575,27 +706,38 @@ async function(){
         affection: 0
 
     })
-    .eq('id', user.id);
+    .eq(
+        'id',
+        user.id
+    )
+    .select();
+
+    console.log(data);
+    console.log(error);
 
     if(error){
 
-        console.error(error);
-
-        showMessage(
-            "保存失敗"
-        );
+        document
+        .getElementById(
+            'message'
+        )
+        .innerText =
+        '保存失敗';
 
         return;
     }
 
-    showMessage(
-        "保存しました"
-    );
+    document
+    .getElementById(
+        'message'
+    )
+    .innerText =
+    '保存しました';
 
     setTimeout(()=>{
 
         location.href =
-        "chat.html";
+        'chat.html';
 
     },1000);
 
@@ -605,3 +747,4 @@ async function(){
 
 </body>
 </html>
+```
