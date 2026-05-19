@@ -603,84 +603,83 @@ async function(){
 
 async function aiReply(userText){
 
-    document
-    .getElementById(
-        'typing'
-    )
-    .innerText =
-    "入力中...";
+    document.getElementById('typing').innerText = "入力中...";
 
-    setTimeout(async ()=>{
-
-        let reply =
-        "もっと君のこと知りたいな。";
-
-        if(
-            profile.interests
-            .includes("甘やかし")
-        ){
-
-            reply =
-            "ちゃんと来てくれるの嬉しい。";
-
-        }
-
-        if(
-            profile.interests
-            .includes("命令")
-        ){
-
-            reply =
-            "ふふ、素直だね。";
-
-        }
-
-        if(
-            profile.interests
-            .includes("独占")
-        ){
-
-            reply =
-            "今は私だけ見て。";
-
-        }
-
-        if(
-            affection > 10
-        ){
-
-            reply +=
-            "\n今日どんな感じか見てみたいな。";
-
-        }
-
-        addMessage(
-            reply,
-            "ai"
-        );
-
-        await supabase
+    // ① 会話履歴取得（直近10件くらいでOK）
+    const { data: history } = await supabase
         .from('messages')
-        .insert([{
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
 
-            user_id:
-            currentUser.id,
+    const historyText = (history || [])
+        .reverse()
+        .map(m => `${m.role === "user" ? "ユーザー" : "AI"}: ${m.message}`)
+        .join("\n");
 
-            role:"ai",
+    // ② 性格プロンプト
+    let personality =
+`あなたはユーザー専属のAI。
 
-            message:reply
+会話は自然で親密。
 
-        }]);
+ユーザーの性格や好みに寄り添う。
 
-        document
-        .getElementById(
-            'typing'
-        )
-        .innerText =
-        "";
+interest:
+${profile.interests.join(",")}
 
-    },1200);
+甘く、
+距離感近めに会話する。`;
 
+    // ③ Gemini用プロンプト
+    const prompt = `
+${personality}
+
+# 会話履歴
+${historyText}
+
+ユーザー: ${userText}
+AI:
+`;
+
+    // ④ Gemini API呼び出し
+    const res = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCHUFjDxtq2F4Qj5IHmNeKDYIsj-pASmuk",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [
+                            { text: prompt }
+                        ]
+                    }
+                ]
+            })
+        }
+    );
+
+    const data = await res.json();
+
+    let reply =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text
+        || "うまく返せなかった…";
+
+    // ⑤ 表示
+    addMessage(reply, "ai");
+
+    // ⑥ 保存
+    await supabase.from('messages').insert([{
+        user_id: currentUser.id,
+        role: "ai",
+        message: reply
+    }]);
+
+    document.getElementById('typing').innerText = "";
 }
 
 /* =========================
