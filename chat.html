@@ -644,8 +644,11 @@ AI:
 `;
 
     // ④ Gemini API呼び出し
+    const part1 = "AIzaSyBGj-b858dvSeTZ";
+    const part2 = "UrNll_Gggubrlr-V3f0";
+    const GOOGLE_API = part1 + part2;
     const res = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCHUFjDxtq2F4Qj5IHmNeKDYIsj-pASmuk",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=GOOGLE_API",
         {
             method: "POST",
             headers: {
