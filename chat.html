@@ -649,46 +649,50 @@ async function(){
 
 async function aiReply(userText){
 
-    document
-    .getElementById(
-        'typing'
-    )
-    .innerText =
-    "入力中...";
 
-    /* 会話履歴 */
+document
+.getElementById(
+    'typing'
+)
+.innerText =
+"入力中...";
 
-    const {
-        data:history
-    } =
-    await supabase
-    .from('messages')
-    .select('*')
-    .eq(
-        'user_id',
-        currentUser.id
-    )
-    .order(
-        'created_at',
-        { ascending:false }
-    )
-    .limit(20);
+/* 会話履歴 */
 
-    const historyText =
-    (history || [])
-    .reverse()
-    .map(m =>
+const {
+    data:history
+} =
+await supabase
+.from('messages')
+.select('*')
+.eq(
+    'user_id',
+    currentUser.id
+)
+.order(
+    'created_at',
+    { ascending:false }
+)
+.limit(20);
+
+const historyText =
+(history || [])
+.reverse()
+.map(m =>
+
 
 `${m.role === "user"
 ? "ユーザー"
 : "AI"}: ${m.message}`
 
-    )
-    .join("\n");
 
-    /* 性格 */
+)
+.join("\n");
 
-    let personality =
+/* 性格 */
+
+let personality =
+
 `
 あなたはユーザー専属AI。
 
@@ -727,12 +731,22 @@ ${profile?.interests?.join(",")}
 AIらしくなく、
 本当に会話してる感じを出す。
 
+返答は途中で終わらせない。
+
+最低でも2文以上で返答する。
+
+会話を切らず、
+自然に続くように返答する。
+
 なかよくなったら写真も要求する。
 `;
 
-    /* プロンプト */
 
-    const prompt =
+/* プロンプト */
+
+const prompt =
+
+
 `
 ${personality}
 
@@ -745,103 +759,154 @@ ${userText}
 【AI】
 `;
 
-    try{
 
-        await new Promise(
-            r=>setTimeout(r,2000)
-        );
+try{
 
-        const res =
-        await fetch(
+    await new Promise(
+        r=>setTimeout(r,2000)
+    );
+
+    const res =
+    await fetch(
+
 
 `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`,
 
 {
-    method:"POST",
+method:"POST",
 
-    headers:{
-        "Content-Type":
-        "application/json"
+
+headers:{
+    "Content-Type":
+    "application/json"
+},
+
+body:JSON.stringify({
+
+    contents:[{
+
+        parts:[{
+            text:prompt
+        }]
+
+    }],
+
+    generationConfig:{
+
+        temperature:1.05,
+
+        topK:40,
+
+        topP:0.95,
+
+        maxOutputTokens:500
+
     },
 
-    body:JSON.stringify({
+    safetySettings:[
 
-        contents:[{
+    {
+        category:"HARM_CATEGORY_HARASSMENT",
+        threshold:"BLOCK_NONE"
+    },
 
-            parts:[{
-                text:prompt
-            }]
+    {
+        category:"HARM_CATEGORY_HATE_SPEECH",
+        threshold:"BLOCK_NONE"
+    },
 
-        }],
+    {
+        category:"HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        threshold:"BLOCK_NONE"
+    },
 
-        generationConfig:{
+    {
+        category:"HARM_CATEGORY_DANGEROUS_CONTENT",
+        threshold:"BLOCK_NONE"
+    }
 
-            temperature:1.05,
+    ]
 
-            topK:40,
+})
 
-            topP:0.95,
 
-            [ { category:"HARM_CATEGORY_HARASSMENT", threshold:"BLOCK_NONE" }, { category:"HARM_CATEGORY_HATE_SPEECH", threshold:"BLOCK_NONE" }, { category:"HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold:"BLOCK_NONE" }, { category:"HARM_CATEGORY_DANGEROUS_CONTENT", threshold:"BLOCK_NONE" } ]
+});
 
-        console.log(
-            "status",
-            res.status
-        );
 
-        const data =
-        await res.json();
+    console.log(
+        "status",
+        res.status
+    );
 
-        console.log(data);
+    const data =
+    await res.json();
 
-        let reply =
-        data?.candidates?.[0]
-        ?.content?.parts?.[0]
-        ?.text
-        || "うまく返せなかった…";
+    console.log(data);
 
-        reply = reply.trim();
+    let reply =
+    data?.candidates?.[0]
+    ?.content?.parts?.[0]
+    ?.text
+    || "うまく返せなかった…";
 
-        addMessage(
-            reply,
-            "ai"
-        );
+    reply = reply.trim();
 
-        /* 保存 */
+    /* 途中切れ対策 */
 
-        await supabase
-        .from('messages')
-        .insert([{
+    if(
+        reply.endsWith("…") ||
+        reply.endsWith("、") ||
+        reply.endsWith("。なん") ||
+        reply.endsWith("言") ||
+        reply.length < 6
+    ){
 
-            user_id:
-            currentUser.id,
-
-            role:
-            "ai",
-
-            message:
-            reply
-
-        }]);
-
-    }catch(err){
-
-        console.error(err);
-
-        addMessage(
-            "通信エラー…",
-            "ai"
-        );
+        reply =
+        "ふふ、まだうまく言葉まとまってないかも。もう少し聞かせて？";
 
     }
 
-    document
-    .getElementById(
-        'typing'
-    )
-    .innerText = "";
+    addMessage(
+        reply,
+        "ai"
+    );
+
+    /* 保存 */
+
+    await supabase
+    .from('messages')
+    .insert([{
+
+        user_id:
+        currentUser.id,
+
+        role:
+        "ai",
+
+        message:
+        reply
+
+    }]);
+
+}catch(err){
+
+    console.error(err);
+
+    addMessage(
+        "通信エラー…",
+        "ai"
+    );
 
 }
+
+document
+.getElementById(
+    'typing'
+)
+.innerText = "";
+
+}
+
 
 /* =========================
    画像送信
