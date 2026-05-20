@@ -672,7 +672,7 @@ async function aiReply(userText){
         'created_at',
         { ascending:false }
     )
-    .limit(10);
+    .limit(20);
 
     const historyText =
     (history || [])
@@ -726,7 +726,8 @@ ${profile?.interests?.join(",")}
 
 AIらしくなく、
 本当に会話してる感じを出す。
-親密度が高くなれば相手に写真を要求する。
+
+なかよくなったら写真も要求する。
 `;
 
     /* プロンプト */
@@ -735,24 +736,20 @@ AIらしくなく、
 `
 ${personality}
 
-会話履歴:
+【会話履歴】
 ${historyText}
 
-ユーザー:
+【ユーザー】
 ${userText}
 
-AI:
+【AI】
 `;
 
     try{
 
-        /* API制限対策 */
-
         await new Promise(
             r=>setTimeout(r,2000)
         );
-
-        /* Gemini */
 
         const res =
         await fetch(
@@ -808,6 +805,8 @@ AI:
         ?.content?.parts?.[0]
         ?.text
         || "うまく返せなかった…";
+
+        reply = reply.trim();
 
         addMessage(
             reply,
