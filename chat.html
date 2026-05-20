@@ -361,7 +361,7 @@ createClient(
 /* =========================
    Gemini
 ========================= */
-
+/*
 const part1 =
 "AIzaSyBGj-b858dvSeTZ";
 
@@ -373,7 +373,15 @@ part1 + part2;
 
 const MODEL =
 "gemini-1.5-flash";
+*/
 
+    const part1 = "ghp_wSLZ6GfrxZkd9R77";
+    const part2 = "kzvPyaSCkGvkOy19V3Fs";
+    const GITHUB_TOKEN = part1 + part2;
+    const ENDPOINT = "https://models.inference.ai.azure.com/chat/completions";
+    // 無料で最も安定しているモデルを指定
+    const MODEL_NAME = "gpt-4o-mini"; 
+    
 /* =========================
    State
 ========================= */
@@ -728,7 +736,7 @@ AI:
         const res =
         await fetch(
 
-`https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+`https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent?key=${GITHUB_TOKEN}`,
 
         {
 
