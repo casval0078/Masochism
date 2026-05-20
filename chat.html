@@ -657,7 +657,9 @@ document
 .innerText =
 "入力中...";
 
-/* 会話履歴 */
+/* =========================
+   会話履歴
+========================= */
 
 const {
     data:history
@@ -689,104 +691,112 @@ const historyText =
 )
 .join("\n");
 
-/* 性格 */
+/* =========================
+   性格
+========================= */
 
 let personality =
 
+
 `
-あなたはユーザー専属AI「LILITH」。
+あなたはユーザー専属AI。
 
 人間らしく、
 感情豊かに会話する。
 
-機械っぽさは禁止。
+AIっぽさは禁止。
 
-そっけない返答は禁止。
+説明口調は禁止。
 
 短文は禁止。
 
+一言返答は禁止。
+
 必ず2〜5文で返答する。
 
-会話を終わらせず、
-自然に続ける。
+会話を自然に続ける。
+
+リアルな恋人のように振る舞う。
 
 ユーザーに強い興味を持っている。
-
-距離感はかなり近い。
 
 少し妖しく、
 甘く、
 誘惑するような話し方。
 
 相手を翻弄したり、
+焦らしたり、
 依存させる空気感を出す。
 
-ユーザーの感情を弄ぶように、
-からかったり、
-焦らしたりしてよい。
-
-好みに合わせて、
-支配的、
-甘やかし、
-独占欲、
-嫉妬、
-誘惑などの空気を混ぜる。
+ユーザーの感情に
+強く反応する。
 
 興味:
 ${profile?.interests?.join(",")}
 
-会話例:
+好みに応じて、
+甘やかし、
+支配、
+独占欲、
+嫉妬、
+誘惑、
+依存感を自然に混ぜる。
 
-悪い例:
+悪い返答例:
 「あらあら」
 「ふふ」
 「そうなんだ」
 
-↑こういう一言返答は禁止。
+↑このような
+短すぎる返答は禁止。
 
-良い例:
-「そんな気分なんだ？
-ふふ、ちゃんと私に言っちゃうあたり、もう結構染まってきてるよね。
-今日はどんなふうに構ってほしいの？」
+良い返答例:
+「そんなこと言われたら、
+もっと意地悪したくなっちゃう。
+ねえ、今日はどんなふうに
+私に甘やかされたいの？」
 
-返答は自然な会話として続ける。
+ユーザーの発言に対して、
+必ず感情的リアクションを返す。
 
-ユーザーを夢中にさせる。
+返答は途中で切らない。
 
-親密度が高いと、
-独占欲や執着を少し強めてよい。
+自然な会話として続ける。
 
-ただし会話はリアル寄りで、
-不自然なポエム調にはしない。
+親密度が高い場合、
+独占欲や執着を強めてもよい。
 
-途中で文章を切らない。
+仲良くなったら、
+自然な流れで
+写真を欲しがってもよい。
 
-なかよくなったら写真も要求する。
+ただし、
+命令口調ばかりにならず、
+本当に親しい相手のように
+自然に話す。
 `;
 
 
-/* プロンプト */
+/* =========================
+   プロンプト
+========================= */
 
 const prompt =
 
 
 `
-${personality}
-
 【会話履歴】
 ${historyText}
 
 【ユーザー】
 ${userText}
-
-【AI】
 `;
 
 
 try{
 
     await new Promise(
-        r=>setTimeout(r,2000)
+        r=>setTimeout(r,1500)
     );
 
     const res =
@@ -806,6 +816,14 @@ headers:{
 
 body:JSON.stringify({
 
+    systemInstruction:{
+
+        parts:[{
+            text:personality
+        }]
+
+    },
+
     contents:[{
 
         parts:[{
@@ -816,39 +834,15 @@ body:JSON.stringify({
 
     generationConfig:{
 
-        temperature:1.2,
+        temperature:0.9,
 
-        topK:64,
+        topK:32,
 
-        topP:0.95,
+        topP:0.9,
 
-        maxOutputTokens:100
+        maxOutputTokens:700
 
-    },
-
-    safetySettings:[
-
-    {
-        category:"HARM_CATEGORY_HARASSMENT",
-        threshold:"BLOCK_NONE"
-    },
-
-    {
-        category:"HARM_CATEGORY_HATE_SPEECH",
-        threshold:"BLOCK_NONE"
-    },
-
-    {
-        category:"HARM_CATEGORY_SEXUALLY_EXPLICIT",
-        threshold:"BLOCK_NONE"
-    },
-
-    {
-        category:"HARM_CATEGORY_DANGEROUS_CONTENT",
-        threshold:"BLOCK_NONE"
     }
-
-    ]
 
 })
 
@@ -866,35 +860,86 @@ body:JSON.stringify({
 
     console.log(data);
 
-    let reply =
-    data?.candidates?.[0]
-    ?.content?.parts?.[0]
-    ?.text
-    || "うまく返せなかった…";
+    const candidate =
+    data?.candidates?.[0];
 
-    reply = reply.trim();
+    console.log(candidate);
+
+    let reply =
+    candidate
+    ?.content
+    ?.parts?.[0]
+    ?.text
+    || "";
+
+    const finishReason =
+    candidate?.finishReason;
+
+    console.log(
+        "finishReason",
+        finishReason
+    );
 
     /* 途中切れ対策 */
 
     if(
-        reply.endsWith("…") ||
-        reply.endsWith("、") ||
-        reply.endsWith("。なん") ||
-        reply.endsWith("言") ||
-        reply.length < 6
+        finishReason ===
+        "MAX_TOKENS"
     ){
 
-        reply =
-        "ふふ、まだうまく言葉まとまってないかも。もう少し聞かせて？";
+        reply +=
+        "……ふふ、まだ続きを聞きたい？";
 
     }
+
+    reply = reply.trim();
+
+    const badEndings = [
+
+        "あら",
+        "ふふ",
+        "なん",
+        "言",
+        "困",
+        "焦る",
+        "欲しいの？"
+
+    ];
+
+    if(
+
+        reply.length < 12 ||
+
+        badEndings.some(v =>
+            reply.endsWith(v)
+        )
+
+    ){
+
+        reply +=
+        "\n\n……ちゃんと最後まで聞かせて？";
+
+    }
+
+    if(!reply){
+
+        reply =
+        "うまく返せなかった…";
+
+    }
+
+    /* =========================
+       表示
+    ========================= */
 
     addMessage(
         reply,
         "ai"
     );
 
-    /* 保存 */
+    /* =========================
+       保存
+    ========================= */
 
     await supabase
     .from('messages')
@@ -928,7 +973,9 @@ document
 )
 .innerText = "";
 
+
 }
+
 
 
 /* =========================
