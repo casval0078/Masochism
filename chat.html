@@ -372,7 +372,7 @@ const GEMINI_API_KEY =
 part1 + part2;
 
 const MODEL =
-"gemini-2.0-flash";
+"gemini-2.5-flash";
 
 /* =========================
    変数
@@ -728,7 +728,7 @@ AI:
         /* API制限対策 */
 
         await new Promise(
-            r=>setTimeout(r,3000)
+            r=>setTimeout(r,5000)
         );
 
         /* Gemini */
@@ -764,7 +764,7 @@ AI:
 
             topP:0.95,
 
-            maxOutputTokens:200
+            maxOutputTokens:80
 
         }
 
