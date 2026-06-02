@@ -800,42 +800,25 @@ await fetch(
         body:JSON.stringify({
 
             message:userText,
-
             history:history,
-
-            interests:
-            profile?.interests || [],
-
-            affection:
-            affection
+            interests:profile?.interests || [],
+            affection:affection,
+            username:profile?.name || ""
 
         })
     }
 );
-});
-
 
     console.log(
         "status",
         res.status
     );
 
-    const data =
-    await res.json();
+const data =
+await res.json();
 
-    console.log(data);
-
-    const candidate =
-    data?.candidates?.[0];
-
-    console.log(candidate);
-
-    let reply =
-    candidate
-    ?.content
-    ?.parts?.[0]
-    ?.text
-    || "";
+let reply =
+data.reply;
 
     const finishReason =
     candidate?.finishReason;
