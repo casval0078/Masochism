@@ -358,21 +358,8 @@ createClient(
     SUPABASE_ANON_KEY
 );
 
-/* =========================
-   Gemini
-========================= */
-
-const part1 =
-"AIzaSyBGj-b858dvSeTZ";
-
-const part2 =
-"UrNll_Gggubrlr-V3f0";
-
-const GEMINI_API_KEY =
-part1 + part2;
-
-const MODEL =
-"gemini-2.5-flash";
+const AI_ENDPOINT =
+"https://masochism.vercel.app/api/test";
 
 /* =========================
    変数
@@ -799,54 +786,32 @@ try{
         r=>setTimeout(r,1500)
     );
 
-    const res =
-    await fetch(
+const res =
+await fetch(
+    AI_ENDPOINT,
+    {
+        method:"POST",
 
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
 
-`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+        body:JSON.stringify({
 
-{
-method:"POST",
+            message:userText,
 
+            history:history,
 
-headers:{
-    "Content-Type":
-    "application/json"
-},
+            interests:
+            profile?.interests || [],
 
-body:JSON.stringify({
+            affection:
+            affection
 
-    systemInstruction:{
-
-        parts:[{
-            text:personality
-        }]
-
-    },
-
-    contents:[{
-
-        parts:[{
-            text:prompt
-        }]
-
-    }],
-
-    generationConfig:{
-
-        temperature:0.9,
-
-        topK:32,
-
-        topP:0.9,
-
-        maxOutputTokens:700
-
+        })
     }
-
-})
-
-
+);
 });
 
 
