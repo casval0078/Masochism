@@ -1,52 +1,123 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 export default async function handler(req, res) {
 
-  try {
+if (req.method !== "POST") {
 
-    const { message } = req.body;
+    return res.status(405).json({
+        error: "Method Not Allowed"
+    });
 
-    const response =
-    await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: message
-                }
-              ]
-            }
-          ]
-        })
-      }
+}
+
+try {
+
+    const {
+        message,
+        history = [],
+        interests = [],
+        affection = 0,
+        username = ""
+    } = req.body;
+
+    const genAI =
+    new GoogleGenerativeAI(
+        process.env.GEMINI_API_KEY
     );
 
-    const data =
-    await response.json();
+    const model =
+    genAI.getGenerativeModel({
+        model: "gemini-2.5-flash"
+    });
+
+    const personality = `
+
+あなたはユーザー専属の会話AI。
+
+人間らしく自然に会話する。
+
+説明口調は禁止。
+
+AIらしい箇条書きは禁止。
+
+ユーザーとの会話を楽しんでいる。
+
+返答は2～5文程度。
+
+短すぎる返答は禁止。
+
+必ず相手の発言に対して
+感情的なリアクションを返す。
+
+ユーザーに興味を持つ。
+
+会話を自然に続ける。
+
+興味:
+${interests.join(",")}
+
+親密度:
+${affection}
+
+親密度が高い場合は、
+少し親しい距離感で話してよい。
+
+名前:
+${username}
+`;
+
+    const historyText =
+    history
+    .slice(-20)
+    .map(msg => {
+
+        return `${
+            msg.role === "user"
+            ? "ユーザー"
+            : "AI"
+        }: ${msg.message}`;
+
+    })
+    .join("\n");
+
+    const prompt = `
+
+${personality}
+
+【会話履歴】
+${historyText}
+
+【最新メッセージ】
+ユーザー: ${message}
+
+AI:
+`;
+
+    const result =
+    await model.generateContent(
+        prompt
+    );
 
     const reply =
-      data?.candidates?.[0]
-      ?.content?.parts?.[0]
-      ?.text
-      || "返答なし";
+    result.response.text();
 
-    res.status(200).json({
-      reply
+    return res.status(200).json({
+
+        reply
+
     });
 
-  } catch(err){
+} catch (error) {
 
-    console.error(err);
+    console.error(error);
 
-    res.status(500).json({
-      reply:"エラー"
+    return res.status(500).json({
+
+        reply:
+        "少し調子が悪いみたい。また話しかけて。"
+
     });
 
-  }
+}
 
 }
