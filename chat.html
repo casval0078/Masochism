@@ -791,20 +791,14 @@ await fetch(
     AI_ENDPOINT,
     {
         method:"POST",
-
         headers:{
-            "Content-Type":
-            "application/json"
+            "Content-Type":"application/json"
         },
-
         body:JSON.stringify({
-
             message:userText,
             history:history,
             interests:profile?.interests || [],
-            affection:affection,
-            username:profile?.name || ""
-
+            affection:affection
         })
     }
 );
@@ -818,72 +812,15 @@ const data =
 await res.json();
 
 let reply =
-data.reply;
+data.reply ||
+"うまく返せなかった…";
 
-    const finishReason =
-    candidate?.finishReason;
+reply = reply.trim();
 
-    console.log(
-        "finishReason",
-        finishReason
-    );
-
-    /* 途中切れ対策 */
-
-    if(
-        finishReason ===
-        "MAX_TOKENS"
-    ){
-
-        reply +=
-        "……ふふ、まだ続きを聞きたい？";
-
-    }
-
-    reply = reply.trim();
-
-    const badEndings = [
-
-        "あら",
-        "ふふ",
-        "なん",
-        "言",
-        "困",
-        "焦る",
-        "欲しいの？"
-
-    ];
-
-    if(
-
-        reply.length < 12 ||
-
-        badEndings.some(v =>
-            reply.endsWith(v)
-        )
-
-    ){
-
-        reply +=
-        "\n\n……ちゃんと最後まで聞かせて？";
-
-    }
-
-    if(!reply){
-
-        reply =
-        "うまく返せなかった…";
-
-    }
-
-    /* =========================
-       表示
-    ========================= */
-
-    addMessage(
-        reply,
-        "ai"
-    );
+addMessage(
+    reply,
+    "ai"
+);
 
     /* =========================
        保存
