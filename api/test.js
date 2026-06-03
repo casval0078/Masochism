@@ -134,7 +134,7 @@ affectionが70以上の場合:
 
     const historyText =
     history
-    .slice(-20)
+    .slice(-8)
     .map(msg => {
 
         return `${
