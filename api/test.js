@@ -96,14 +96,23 @@ AI:
 
     });
 
-} catch (error) {
+} catch(error) {
 
-    console.error(error);
+    console.error(
+  "Gemini Error:",
+  JSON.stringify(
+    error,
+    null,
+    2
+  )
+);
 
     return res.status(500).json({
 
-        reply:
-        "少し調子が悪いみたい。また話しかけて。"
+        error:
+        error?.message ||
+
+        "Unknown Error"
 
     });
 
