@@ -502,64 +502,63 @@ async function loadMessages(){
    初回AI
 ========================= */
 
-function firstAIMessage(){
+async function firstAIMessage(){
 
     const container =
     document.getElementById(
-        'chatContainer'
+        "chatContainer"
     );
 
-    if(
-        container.children.length > 0
-    ){
-
+    if(container.children.length > 0){
         return;
     }
 
-    let intro =
-`また来てくれたんだ。
-今日はどんな気分？`;
+    try{
 
-    if(
-        profile?.interests?.includes(
-            "甘やかし"
-        )
-    ){
+        const res =
+        await fetch(
+            AI_ENDPOINT,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+                body:JSON.stringify({
 
-        intro =
-`おかえり。
-ちゃんと来てくれてえらいね。`;
+                    firstMessage:true,
+
+                    interests:
+                    profile?.interests || [],
+
+                    affection:
+                    affection,
+
+                    username:
+                    profile?.name || ""
+
+                })
+            }
+        );
+
+        const data =
+        await res.json();
+
+        addMessage(
+            data.reply,
+            "ai"
+        );
+
+    }catch(err){
+
+        console.error(err);
+
+        addMessage(
+            "おかえり。",
+            "ai"
+        );
 
     }
-
-    if(
-        profile?.interests?.includes(
-            "命令"
-        )
-    ){
-
-        intro =
-`おかえり。
-今日はちゃんと言うこと聞ける？`;
-
-    }
-
-    if(
-        profile?.interests?.includes(
-            "ヤンデレ"
-        )
-    ){
-
-        intro =
-`待ってた。
-今日はちゃんと私だけ見てね。`;
-
-    }
-
-    addMessage(
-        intro,
-        "ai"
-    );
 
 }
 
