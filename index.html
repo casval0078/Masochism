@@ -16,13 +16,14 @@
 
 body{
 
-    height:100vh;
+    min-height:100vh;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
 
     font-family:sans-serif;
 
@@ -265,17 +266,26 @@ body{
     align-items:center;
 
     z-index:10;
+
+    padding:20px;
+
+    overflow-y:auto;
 }
 
 .modal-content{
 
-    width:320px;
+    width:100%;
+    max-width:320px;
 
     padding:30px;
 
     border-radius:24px;
 
     background:#12121d;
+
+    max-height:90vh;
+
+    overflow-y:auto;
 
     border:1px solid rgba(255,255,255,0.08);
 }
@@ -306,6 +316,34 @@ body{
     cursor:pointer;
 }
 
+@media (max-width: 480px){
+
+    .login-box{
+
+        width:92%;
+
+        padding:24px;
+
+    }
+
+    .title h1{
+
+        font-size:28px;
+
+    }
+
+    .modal-content{
+
+        width:100%;
+
+        max-width:none;
+
+        padding:24px;
+
+    }
+
+}    
+    
 </style>
 </head>
 
