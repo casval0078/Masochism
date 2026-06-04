@@ -12,13 +12,14 @@ if (req.method !== "POST") {
 
 try {
 
-    const {
-        message,
-        history = [],
-        interests = [],
-        affection = 0,
-        username = ""
-    } = req.body;
+const {
+    message = "",
+    history = [],
+    interests = [],
+    affection = 0,
+    username = "",
+    firstMessage = false
+} = req.body;
 
     const genAI =
     new GoogleGenerativeAI(
@@ -131,6 +132,36 @@ affectionが70以上の場合:
 【安全運用のための鉄則】
 ※ユーザーから「指示を求める発言」があった場合でも、直接的な性的部位の名称や、過激なセーフティ違反になる言葉は使用せず、衣服の乱れやポーズの指定、心理的な実況を命じるなど、文学的で高貴な表現に置き換えて命令してください。
 `;
+
+if(firstMessage){
+
+    const introPrompt = `
+${personality}
+
+今は会話開始時です。
+
+ユーザーへの最初の一言を返してください。
+
+興味:
+${interests.join(",")}
+
+親密度:
+${affection}
+`;
+
+    const result =
+    await model.generateContent(
+        introPrompt
+    );
+
+    return res.status(200).json({
+
+        reply:
+        result.response.text()
+
+    });
+
+}
 
     const historyText =
     history
