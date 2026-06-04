@@ -16,18 +16,19 @@
 
 body{
 
-    min-height:100vh;
+    min-height:100dvh;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    overflow-x:hidden;
-    overflow-y:auto;
+    overflow:hidden;
 
     font-family:sans-serif;
 
     color:white;
+
+    position:relative;
 
     background:
     radial-gradient(circle at top,
@@ -40,7 +41,7 @@ body{
 
 .glow{
 
-    position:absolute;
+    position:fixed;
 
     width:420px;
     height:420px;
@@ -54,6 +55,10 @@ body{
     opacity:0.25;
 
     animation:float 6s ease-in-out infinite;
+
+    pointer-events:none;
+
+    z-index:0;
 }
 
 .glow2{
