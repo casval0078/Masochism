@@ -27,7 +27,7 @@ try {
 
     const model =
     genAI.getGenerativeModel({
-        model: "gemini-2.5-flash"
+        model: "gemini-2.5-flash-lite"
     });
 
 const personality = `
@@ -176,23 +176,51 @@ AI:
 } catch(error) {
 
     console.error(
-  "Gemini Error:",
-  JSON.stringify(
-    error,
-    null,
-    2
-  )
-);
+        "Gemini Error:",
+        JSON.stringify(
+            error,
+            null,
+            2
+        )
+    );
 
-    return res.status(500).json({
+    const status =
+        error?.status ||
+        error?.statusCode;
 
-        error:
-        error?.message ||
+    /* 429: 利用上限 */
 
-        "Unknown Error"
+    if(status === 429){
+
+        return res.status(200).json({
+
+            reply:
+            "今日はたくさんお話ししたね。また明日ゆっくり話そう。"
+
+        });
+
+    }
+
+    /* 503: Gemini障害 */
+
+    if(status === 503){
+
+        return res.status(200).json({
+
+            reply:
+            "今ちょっと調子が悪いみたい。また少ししてから話しかけて。"
+
+        });
+
+    }
+
+    /* その他 */
+
+    return res.status(200).json({
+
+        reply:
+        "少し調子が悪いみたい。また話しかけて。"
 
     });
-
-}
 
 }
